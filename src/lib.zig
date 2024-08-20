@@ -158,7 +158,7 @@ pub const GL = struct {
     ptr_glGetError: ?*const fn () callconv(APIENTRY) Enum,
     ptr_glGetFloatv: ?*const fn (pname: Enum, data: [*]Double) callconv(APIENTRY) void,
     ptr_glGetIntegerv: ?*const fn (pname: Enum, data: [*]Int) callconv(APIENTRY) void,
-    ptr_glGetString: ?*const fn (pname: Enum) callconv(APIENTRY) [*:0]const u8,
+    ptr_glGetString: ?*const fn (pname: Enum) callconv(APIENTRY) ?[*:0]const u8,
     ptr_glGetTexImage: ?*const fn (target: Enum, level: Int, format: Enum, @"type": Enum, pixels: [*]u8) callconv(APIENTRY) void,
     ptr_glGetTexParameterfv: ?*const fn (target: Enum, pname: Enum, params: [*]Float) callconv(APIENTRY) void,
     ptr_glGetTexParameteriv: ?*const fn (target: Enum, pname: Enum, params: [*]Int) callconv(APIENTRY) void,
@@ -1359,7 +1359,7 @@ pub const GL = struct {
     pub fn getIntegerv(self: *const GL, pname: Enum, data: [*]Int) void {
         return self.ptr_glGetIntegerv.?(pname, data);
     }
-    pub fn getString(self: *const GL, pname: Enum) [*:0]const u8 {
+    pub fn getString(self: *const GL, pname: Enum) ?[*:0]const u8 {
         return self.ptr_glGetString.?(pname);
     }
     pub fn getTexImage(self: *const GL, target: Enum, level: Int, format: Enum, @"type": Enum, pixels: [*]u8) void {
