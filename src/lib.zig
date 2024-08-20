@@ -7,16 +7,21 @@ const std = @import("std");
 const builtin = @import("builtin");
 
 const assert = std.debug.assert;
-const WINDOWS = builtin.os.tag == .windows;
-const X86 = builtin.cpu.arch == .x86;
-const WIN32 = WINDOWS and X86;
-const APPLE = builtin.os.tag == .macos or builtin.os.tag == .ios;
+
+const WIN32 = true and
+    builtin.os.tag == .windows and
+    builtin.cpu.arch == .x86;
 
 var glLib: ?std.DynLib = null;
+var getProcFunc: ?GL.ProcLoader = null;
 
 fn procLoader(name: [*:0]const u8) callconv(.C) ?*const anyopaque {
     if (glLib) |*lib| {
-        return lib.lookup(*anyopaque, @ptrCast(std.mem.span(name)));
+        return (if (getProcFunc) |getProc|
+            getProc(name)
+        else
+            null) orelse
+            lib.lookup(*anyopaque, @ptrCast(std.mem.span(name)));
     } else return null;
 }
 
@@ -37,6 +42,14 @@ fn openLib() !void {
             if (i != names.len) continue else return e;
         break;
     }
+    getProcFunc = glLib.?.lookup(GL.ProcLoader, switch (builtin.os.tag) {
+        .windows => "wglGetProcAddress",
+        .macos => "glXGetProcAddressARB",
+        else => {
+            getProcFunc = null;
+            return;
+        },
+    });
 }
 fn closeLib() void {
     if (glLib) |*lib| {
@@ -97,7 +110,6 @@ pub const GL = struct {
     pub const UInt64 = u64;
     pub const UInt64EXT = i64;
     pub const Sync = ?*opaque {};
-    /// See [Debug Output](https://www.khronos.org/opengl/wiki/Debug_Output)
     pub const DebugProc = *const fn (source: Enum, @"type": Enum, id: UInt, severity: Enum, length: Sizei, message: [*]const Char, ?*const anyopaque) callconv(.C) void;
 
     pub const APIENTRY: std.builtin.CallingConvention = if (WIN32) .Stdcall else .C;
@@ -105,7 +117,6 @@ pub const GL = struct {
     var globalGL: GL = undefined;
 
     version: Version,
-    lib: ?std.DynLib,
 
     //#region OpenGL 1.0
     ptr_glCullFace: ?*const fn (mode: Enum) callconv(APIENTRY) void,
@@ -1202,35 +1213,25 @@ pub const GL = struct {
         return globalGL.init(loader);
     }
     pub fn init(self: *GL, loader: ?ProcLoader) !void {
-        const loaderFunc: ProcLoader = loader orelse procLoader;
-
-        glLib = null;
-        if (loader == null) {
+        if (loader) |loaderFunc|
+            self.initProc(loaderFunc)
+        else {
             try openLib();
-        }
-        self.lib = glLib;
-        defer glLib = null;
-        errdefer closeLib();
 
-        @setEvalBranchQuota(std.meta.fields(GL).len + 2);
-        inline for (std.meta.fields(GL)) |field| {
-            const tinfo = @typeInfo(field.type);
-            // basiacally if the field is a function pointer
-            if (comptime tinfo == .Optional and
-                @typeInfo(tinfo.Optional.child) == .Pointer and
-                @typeInfo(@typeInfo(tinfo.Optional.child).Pointer.child) == .Fn and
-                @typeInfo(@typeInfo(tinfo.Optional.child).Pointer.child).Fn.calling_convention == APIENTRY)
-            {
-                @field(self, field.name) = @ptrCast(@alignCast(loaderFunc(field.name[4..])));
-            }
+            self.initProc(procLoader);
+
+            closeLib();
         }
 
         self.getIntegerv(GL.MAJOR_VERSION, @ptrCast(&self.version.major));
         self.getIntegerv(GL.MINOR_VERSION, @ptrCast(&self.version.minor));
     }
-    pub fn deinit(self: *GL) void {
-        if (self.lib) |*lib| {
-            lib.close();
+    fn initProc(self: *GL, loader: ProcLoader) void {
+        @setEvalBranchQuota(std.meta.fields(GL).len * 50);
+        inline for (std.meta.fields(GL)) |field| {
+            if (comptime std.mem.startsWith(u8, field.name, "ptr_gl")) {
+                @field(self, field.name) = @ptrCast(@alignCast(loader(field.name["ptr_".len..])));
+            }
         }
     }
 
@@ -4461,5 +4462,4 @@ pub const GL = struct {
         return self.ptr_glPolygonOffsetClamp.?(factor, units, clamp);
     }
     //#endregion
-
 };
