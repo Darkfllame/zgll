@@ -1,3 +1,8 @@
+/// I'm exited for the decl's literals.
+/// Just for this, since I'd only need to
+/// make an enum and any duplicate value would
+/// be declarations. Also Idk where to find since
+/// when the enums are available :/ sorry.
 pub const Enum = u32;
 pub const POINTS: Enum = 0x0000;
 pub const LINES: Enum = 0x0001;
