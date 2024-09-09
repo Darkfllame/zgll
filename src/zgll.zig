@@ -1211,30 +1211,39 @@ pub const GL = struct {
     //#endregion
 
     pub fn init(self: *GL, loader: ?ProcLoader) !void {
+        try loadFunctions(GL, self, loader);
+
+        var version: [2]i32 = undefined;
+        self.getIntegerv(GL.MAJOR_VERSION, @ptrCast(&version[0]));
+        self.getIntegerv(GL.MINOR_VERSION, @ptrCast(&version[1]));
+        self.version = .{
+            .major = @intCast(version[0]),
+            .minor = @intCast(version[1]),
+        };
+    }
+    /// Add `ZGLL_PREFIX` to change the function pointer
+    /// prefix, default is `ptr_`.
+    pub fn loadFunctions(comptime T: type, v: *T, loader: ?GL.ProcLoader) !void {
         if (loader) |loaderFunc|
-            self.initProc(loaderFunc)
+            initProc(T, v, loaderFunc)
         else {
             try openLib();
 
-            self.initProc(procLoader);
+            initProc(T, v, procLoader);
 
             closeLib();
         }
-        {
-            var version: [2]i32 = undefined;
-            self.getIntegerv(GL.MAJOR_VERSION, @ptrCast(&version[0]));
-            self.getIntegerv(GL.MINOR_VERSION, @ptrCast(&version[1]));
-            self.version = .{
-                .major = @intCast(version[0]),
-                .minor = @intCast(version[1]),
-            };
-        }
     }
-    fn initProc(self: *GL, loader: ProcLoader) void {
+
+    inline fn initProc(comptime T: type, v: *T, loader: ?GL.ProcLoader) void {
         @setEvalBranchQuota(std.meta.fields(GL).len * 50);
-        inline for (std.meta.fields(GL)) |field| {
-            if (comptime std.mem.startsWith(u8, field.name, "ptr_gl")) {
-                @field(self, field.name) = @ptrCast(@alignCast(loader(field.name["ptr_".len..])));
+        inline for (std.meta.fields(T)) |field| {
+            const prefix = if (@hasDecl(T, "ZGLL_PREFIX"))
+                T.ZGLL_PREFIX
+            else
+                "ptr_";
+            if (comptime std.mem.startsWith(u8, field.name, prefix)) {
+                @field(v, field.name) = @ptrCast(@alignCast(loader(field.name[prefix.len..])));
             }
         }
     }
