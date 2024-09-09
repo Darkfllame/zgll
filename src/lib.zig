@@ -58,8 +58,7 @@ fn closeLib() void {
     }
 }
 
-/// Use `.initGlobal()` if you're scared about messing with the stack,
-/// or use `.init()` along with an existing variable of this type
+/// Use `.init()` along with an existing variable of this type
 /// to load the current context's OpenGL functions.
 pub const GL = struct {
     comptime {
@@ -118,8 +117,6 @@ pub const GL = struct {
     pub const DebugProc = *const fn (source: Enum, @"type": Enum, id: UInt, severity: Enum, length: Sizei, message: [*:0]const Char, ud: ?*const anyopaque) callconv(.C) void;
 
     pub const APIENTRY: std.builtin.CallingConvention = if (WIN32) .Stdcall else .C;
-
-    var globalGL: GL = undefined;
 
     version: Version,
 
@@ -1213,9 +1210,6 @@ pub const GL = struct {
     ptr_glPolygonOffsetClamp: ?*const fn (factor: Float, units: Float, clamp: Float) callconv(APIENTRY) void,
     //#endregion
 
-    pub inline fn initGlobal(loader: ?ProcLoader) !*GL {
-        return globalGL.init(loader);
-    }
     pub fn init(self: *GL, loader: ?ProcLoader) !void {
         if (loader) |loaderFunc|
             self.initProc(loaderFunc)
