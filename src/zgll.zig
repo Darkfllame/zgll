@@ -92,8 +92,10 @@ pub const GL = struct {
         }
     };
 
-    pub const Enum = @import("GLenum.zig").Enum;
-    pub const Bitfield = @import("GLbitfield.zig").Bitfield;
+    pub const Enum = GL.Enum;
+    pub usingnamespace @import("GLenum.zig");
+    pub const Bitfield = GL.Bitfield;
+    pub usingnamespace @import("GLbitfield.zig");
     pub const Byte = i8;
     pub const UByte = u8;
     pub const Short = i16;
@@ -1235,7 +1237,7 @@ pub const GL = struct {
         }
     }
 
-    inline fn initProc(comptime T: type, v: *T, loader: ?GL.ProcLoader) void {
+    inline fn initProc(comptime T: type, v: *T, loader: GL.ProcLoader) void {
         @setEvalBranchQuota(std.meta.fields(GL).len * 50);
         inline for (std.meta.fields(T)) |field| {
             const prefix = if (@hasDecl(T, "ZGLL_PREFIX"))
