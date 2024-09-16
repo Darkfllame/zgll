@@ -92,9 +92,9 @@ pub const GL = struct {
         }
     };
 
-    pub const Enum = GL.Enum;
+    const Enum = GL.Enum;
     pub usingnamespace @import("GLenum.zig");
-    pub const Bitfield = GL.Bitfield;
+    const Bitfield = GL.Bitfield;
     pub usingnamespace @import("GLbitfield.zig");
     pub const Byte = i8;
     pub const UByte = u8;
