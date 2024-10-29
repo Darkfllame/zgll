@@ -432,7 +432,7 @@ pub const GL = struct {
     //#endregion
     //#region OpenGL 1.1
     ptr_glDrawArrays: ?*const fn (mode: Enum, first: Int, count: Sizei) callconv(APIENTRY) void,
-    ptr_glDrawElements: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque) callconv(APIENTRY) void,
+    ptr_glDrawElements: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: usize) callconv(APIENTRY) void,
     ptr_glGetPointerv: ?*const fn (pname: Enum, params: [*]?*anyopaque) callconv(APIENTRY) void,
     ptr_glPolygonOffset: ?*const fn (factor: Float, units: Float) callconv(APIENTRY) void,
     ptr_glCopyTexImage1D: ?*const fn (target: Enum, level: Int, internalFormat: Enum, x: Int, y: Int, width: Sizei, border: Int) callconv(APIENTRY) void,
@@ -463,7 +463,7 @@ pub const GL = struct {
     ptr_glPushClientAttrib: ?*const fn (mask: Bitfield) callconv(APIENTRY) void,
     //#endregion
     //#region OpenGL 1.2
-    ptr_glDrawRangeElements: ?*const fn (mode: Enum, start: UInt, end: UInt, count: Sizei, @"type": Enum, indices: ?*const anyopaque) callconv(APIENTRY) void,
+    ptr_glDrawRangeElements: ?*const fn (mode: Enum, start: UInt, end: UInt, count: Sizei, @"type": Enum, indices: usize) callconv(APIENTRY) void,
     ptr_glTexImage3D: ?*const fn (target: Enum, level: Int, internalFormat: Int, width: Sizei, height: Sizei, depth: Sizei, border: Int, format: Enum, @"type": Enum, pixels: ?*const anyopaque) callconv(APIENTRY) void,
     ptr_glTexSubImage3D: ?*const fn (target: Enum, level: Int, xoffset: Int, yoffset: Int, zoffset: Int, width: Sizei, height: Sizei, depth: Sizei, format: Enum, @"type": Enum, pixels: ?*const anyopaque) callconv(APIENTRY) void,
     ptr_glCopyTexSubImage3D: ?*const fn (target: Enum, level: Int, xoffset: Int, yoffset: Int, zoffset: Int, x: Int, y: Int, width: Sizei, height: Sizei) callconv(APIENTRY) void,
@@ -519,7 +519,7 @@ pub const GL = struct {
     //#region OpenGL 1.4
     ptr_glBlendFuncSeparate: ?*const fn (sfactorRGB: Enum, dfactorRGB: Enum, sfactorAlpha: Enum, dfactorAlpha: Enum) callconv(APIENTRY) void,
     ptr_glMultiDrawArrays: ?*const fn (mode: Enum, first: [*]const Int, count: [*]const Sizei, drawcount: Sizei) callconv(APIENTRY) void,
-    ptr_glMultiDrawElements: ?*const fn (mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const ?*const anyopaque, drawcount: Sizei) callconv(APIENTRY) void,
+    ptr_glMultiDrawElements: ?*const fn (mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const usize, drawcount: Sizei) callconv(APIENTRY) void,
     ptr_glPointParameterf: ?*const fn (pname: Enum, param: Float) callconv(APIENTRY) void,
     ptr_glPointParameterfv: ?*const fn (pname: Enum, params: [*]const Float) callconv(APIENTRY) void,
     ptr_glPointParameteri: ?*const fn (pname: Enum, param: Int) callconv(APIENTRY) void,
@@ -680,7 +680,7 @@ pub const GL = struct {
     ptr_glVertexAttrib4ubv: ?*const fn (index: UInt, v: *const [4]UByte) callconv(APIENTRY) void,
     ptr_glVertexAttrib4uiv: ?*const fn (index: UInt, v: *const [4]UInt) callconv(APIENTRY) void,
     ptr_glVertexAttrib4usv: ?*const fn (index: UInt, v: *const [4]UShort) callconv(APIENTRY) void,
-    ptr_glVertexAttribPointer: ?*const fn (index: UInt, size: Int, @"type": Enum, normalized: bool, stride: Sizei, pointer: ?*const anyopaque) callconv(APIENTRY) void,
+    ptr_glVertexAttribPointer: ?*const fn (index: UInt, size: Int, @"type": Enum, normalized: bool, stride: Sizei, pointer: usize) callconv(APIENTRY) void,
     //#endregion
     //#region OpenGL 2.1
     ptr_glUniformMatrix2x3fv: ?*const fn (location: Int, count: Sizei, transpose: bool, v: *const [2 * 3]Float) callconv(APIENTRY) void,
@@ -707,7 +707,7 @@ pub const GL = struct {
     ptr_glClampColor: ?*const fn (target: Enum, clamp: Enum) callconv(APIENTRY) void,
     ptr_glBeginConditionalRender: ?*const fn (id: UInt, mode: Enum) callconv(APIENTRY) void,
     ptr_glEndConditionalRender: ?*const fn () callconv(APIENTRY) void,
-    ptr_glVertexAttribIPointer: ?*const fn (index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: ?*const anyopaque) callconv(APIENTRY) void,
+    ptr_glVertexAttribIPointer: ?*const fn (index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: usize) callconv(APIENTRY) void,
     ptr_glGetVertexAttribIiv: ?*const fn (index: UInt, pname: Enum, params: [*]Int) callconv(APIENTRY) void,
     ptr_glGetVertexAttribIuiv: ?*const fn (index: UInt, pname: Enum, params: [*]UInt) callconv(APIENTRY) void,
     ptr_glVertexAttribI1i: ?*const fn (index: UInt, x: Int) callconv(APIENTRY) void,
@@ -779,7 +779,7 @@ pub const GL = struct {
     //#endregion
     //#region OpenGL 3.1
     ptr_glDrawArraysInstanced: ?*const fn (mode: Enum, first: Int, count: Sizei, instancecount: Sizei) callconv(APIENTRY) void,
-    ptr_glDrawElementsInstanced: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei) callconv(APIENTRY) void,
+    ptr_glDrawElementsInstanced: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei) callconv(APIENTRY) void,
     ptr_glTexBuffer: ?*const fn (target: Enum, internalFormat: Enum, buffer: UInt) callconv(APIENTRY) void,
     ptr_glPrimitiveRestartIndex: ?*const fn (index: UInt) callconv(APIENTRY) void,
     ptr_glCopyBufferSubData: ?*const fn (readTarget: Enum, writeTarget: Enum, readOffset: Intptr, writeOffset: Intptr, size: Sizeiptr) callconv(APIENTRY) void,
@@ -792,10 +792,10 @@ pub const GL = struct {
     ptr_glUniformBlockBinding: ?*const fn (program: UInt, uniformBlockIndex: UInt, uniformBlockBinding: UInt) callconv(APIENTRY) void,
     //#endregion
     //#region OpenGL 3.2
-    ptr_glDrawElementsBaseVertex: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, basevertex: Int) callconv(APIENTRY) void,
-    ptr_glDrawRangeElementsBaseVertex: ?*const fn (mode: Enum, start: UInt, end: UInt, count: Sizei, @"type": Enum, indices: ?*const anyopaque, basevertex: Int) callconv(APIENTRY) void,
-    ptr_glDrawElementsInstancedBaseVertex: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei, basevertex: Int) callconv(APIENTRY) void,
-    ptr_glMultiDrawElementsBaseVertex: ?*const fn (mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const ?*const anyopaque, drawcount: Sizei, basevertex: [*]const Int) callconv(APIENTRY) void,
+    ptr_glDrawElementsBaseVertex: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: usize, basevertex: Int) callconv(APIENTRY) void,
+    ptr_glDrawRangeElementsBaseVertex: ?*const fn (mode: Enum, start: UInt, end: UInt, count: Sizei, @"type": Enum, indices: usize, basevertex: Int) callconv(APIENTRY) void,
+    ptr_glDrawElementsInstancedBaseVertex: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei, basevertex: Int) callconv(APIENTRY) void,
+    ptr_glMultiDrawElementsBaseVertex: ?*const fn (mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const usize, drawcount: Sizei, basevertex: [*]const Int) callconv(APIENTRY) void,
     ptr_glProvokingVertex: ?*const fn (mode: Enum) callconv(APIENTRY) void,
     ptr_glFenceSync: ?*const fn (condition: Enum, flags: Bitfield) callconv(APIENTRY) Sync,
     ptr_glIsSync: ?*const fn (sync: Sync) callconv(APIENTRY) bool,
@@ -998,7 +998,7 @@ pub const GL = struct {
     ptr_glVertexAttribL2dv: ?*const fn (index: UInt, v: *const [2]Double) callconv(APIENTRY) void,
     ptr_glVertexAttribL3dv: ?*const fn (index: UInt, v: *const [3]Double) callconv(APIENTRY) void,
     ptr_glVertexAttribL4dv: ?*const fn (index: UInt, v: *const [4]Double) callconv(APIENTRY) void,
-    ptr_glVertexAttribLPointer: ?*const fn (index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: ?*const anyopaque) callconv(APIENTRY) void,
+    ptr_glVertexAttribLPointer: ?*const fn (index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: usize) callconv(APIENTRY) void,
     ptr_glGetVertexAttribLdv: ?*const fn (index: UInt, pname: Enum, params: [*]Double) callconv(APIENTRY) void,
     ptr_glViewportArrayv: ?*const fn (first: UInt, count: Sizei, v: [*]const [4]Float) callconv(APIENTRY) void,
     ptr_glViewportIndexedf: ?*const fn (index: UInt, x: Float, y: Float, w: Float, h: Float) callconv(APIENTRY) void,
@@ -1013,8 +1013,8 @@ pub const GL = struct {
     //#endregion
     //#region OpenGL 4.2
     ptr_glDrawArraysInstancedBaseInstance: ?*const fn (mode: Enum, first: Int, count: Sizei, instancecount: Sizei, baseinstance: UInt) callconv(APIENTRY) void,
-    ptr_glDrawElementsInstancedBaseInstance: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei, baseinstance: UInt) callconv(APIENTRY) void,
-    ptr_glDrawElementsInstancedBaseVertexBaseInstance: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei, basevertex: Int, baseinstance: UInt) callconv(APIENTRY) void,
+    ptr_glDrawElementsInstancedBaseInstance: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei, baseinstance: UInt) callconv(APIENTRY) void,
+    ptr_glDrawElementsInstancedBaseVertexBaseInstance: ?*const fn (mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei, basevertex: Int, baseinstance: UInt) callconv(APIENTRY) void,
     ptr_glGetInternalformativ: ?*const fn (target: Enum, internalformat: Enum, pname: Enum, count: Sizei, params: [*]Int) callconv(APIENTRY) void,
     ptr_glGetActiveAtomicCounterBufferiv: ?*const fn (program: UInt, bufferIndex: UInt, pname: Enum, params: [*]Int) callconv(APIENTRY) void,
     ptr_glBindImageTexture: ?*const fn (unit: UInt, texture: UInt, level: Int, layered: bool, layer: Int, access: Enum, format: Enum) callconv(APIENTRY) void,
@@ -1223,7 +1223,7 @@ pub const GL = struct {
             .minor = @intCast(version[1]),
         };
     }
-    /// Add `ZGLL_PREFIX` to change the function pointer
+    /// Add `ZGLL_PREFIX` constant to change the function pointer
     /// prefix, default is `ptr_`.
     pub fn loadFunctions(comptime T: type, v: *T, loader: ?GL.ProcLoader) !void {
         if (loader) |loaderFunc|
@@ -2484,7 +2484,7 @@ pub const GL = struct {
         return self.ptr_glDrawArrays.?(mode, first, count);
     }
     /// - **Available since:** OpenGL 1.1
-    pub fn drawElements(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque) void {
+    pub fn drawElements(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: usize) void {
         return self.ptr_glDrawElements.?(mode, count, @"type", indices);
     }
     /// - **Available since:** OpenGL 1.1
@@ -2602,7 +2602,7 @@ pub const GL = struct {
     //#endregion
     //#region OpenGL 1.2
     /// - **Available since:** OpenGL 1.2
-    pub fn drawRangeElements(self: *const GL, mode: Enum, start: UInt, _end: UInt, count: Sizei, @"type": Enum, indices: ?*const anyopaque) void {
+    pub fn drawRangeElements(self: *const GL, mode: Enum, start: UInt, _end: UInt, count: Sizei, @"type": Enum, indices: usize) void {
         return self.ptr_glDrawRangeElements.?(mode, start, _end, count, @"type", indices);
     }
     /// - **Available since:** OpenGL 1.2
@@ -2813,7 +2813,7 @@ pub const GL = struct {
         return self.ptr_glMultiDrawArrays.?(mode, first, count, drawcount);
     }
     /// - **Available since:** OpenGL 1.4
-    pub fn multiDrawElements(self: *const GL, mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const ?*const anyopaque, drawcount: Sizei) void {
+    pub fn multiDrawElements(self: *const GL, mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const usize, drawcount: Sizei) void {
         return self.ptr_glMultiDrawElements.?(mode, count, @"type", indices, drawcount);
     }
     /// - **Available since:** OpenGL 1.4
@@ -3442,7 +3442,7 @@ pub const GL = struct {
         return self.ptr_glVertexAttrib4usv.?(_index, v);
     }
     /// - **Available since:** OpenGL 2.0
-    pub fn vertexAttribPointer(self: *const GL, _index: UInt, size: Int, @"type": Enum, normalized: bool, stride: Sizei, pointer: ?*const anyopaque) void {
+    pub fn vertexAttribPointer(self: *const GL, _index: UInt, size: Int, @"type": Enum, normalized: bool, stride: Sizei, pointer: usize) void {
         return self.ptr_glVertexAttribPointer.?(_index, size, @"type", normalized, stride, pointer);
     }
     //#endregion
@@ -3535,7 +3535,7 @@ pub const GL = struct {
         return self.ptr_glEndConditionalRender.?();
     }
     /// - **Available since:** OpenGL 3.0
-    pub fn vertexAttribIPointer(self: *const GL, _index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: ?*const anyopaque) void {
+    pub fn vertexAttribIPointer(self: *const GL, _index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: usize) void {
         return self.ptr_glVertexAttribIPointer.?(_index, size, @"type", stride, pointer);
     }
     /// - **Available since:** OpenGL 3.0
@@ -3817,7 +3817,7 @@ pub const GL = struct {
         return self.ptr_glDrawArraysInstanced.?(mode, first, count, instancecount);
     }
     /// - **Available since:** OpenGL 3.1
-    pub fn drawElementsInstanced(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei) void {
+    pub fn drawElementsInstanced(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei) void {
         return self.ptr_glDrawElementsInstanced.?(mode, count, @"type", indices, instancecount);
     }
     /// - **Available since:** OpenGL 3.1
@@ -3863,19 +3863,19 @@ pub const GL = struct {
     //#endregion
     //#region OpenGL 3.2
     /// - **Available since:** OpenGL 3.2
-    pub fn drawElementsBaseVertex(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, basevertex: Int) void {
+    pub fn drawElementsBaseVertex(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: usize, basevertex: Int) void {
         return self.ptr_glDrawElementsBaseVertex.?(mode, count, @"type", indices, basevertex);
     }
     /// - **Available since:** OpenGL 3.2
-    pub fn drawRangeElementsBaseVertex(self: *const GL, mode: Enum, start: UInt, _end: UInt, count: Sizei, @"type": Enum, indices: ?*const anyopaque, basevertex: Int) void {
+    pub fn drawRangeElementsBaseVertex(self: *const GL, mode: Enum, start: UInt, _end: UInt, count: Sizei, @"type": Enum, indices: usize, basevertex: Int) void {
         return self.ptr_glDrawRangeElementsBaseVertex.?(mode, start, _end, count, @"type", indices, basevertex);
     }
     /// - **Available since:** OpenGL 3.2
-    pub fn drawElementsInstancedBaseVertex(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei, basevertex: Int) void {
+    pub fn drawElementsInstancedBaseVertex(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei, basevertex: Int) void {
         return self.ptr_glDrawElementsInstancedBaseVertex.?(mode, count, @"type", indices, instancecount, basevertex);
     }
     /// - **Available since:** OpenGL 3.2
-    pub fn multiDrawElementsBaseVertex(self: *const GL, mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const ?*const anyopaque, drawcount: Sizei, basevertex: [*]const Int) void {
+    pub fn multiDrawElementsBaseVertex(self: *const GL, mode: Enum, count: [*]const Sizei, @"type": Enum, indices: [*]const usize, drawcount: Sizei, basevertex: [*]const Int) void {
         return self.ptr_glMultiDrawElementsBaseVertex.?(mode, count, @"type", indices, drawcount, basevertex);
     }
     /// - **Available since:** OpenGL 3.2
@@ -4666,7 +4666,7 @@ pub const GL = struct {
         return self.ptr_glVertexAttribL4dv.?(_index, v);
     }
     /// - **Available since:** OpenGL 4.1
-    pub fn vertexAttribLPointer(self: *const GL, _index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: ?*const anyopaque) void {
+    pub fn vertexAttribLPointer(self: *const GL, _index: UInt, size: Int, @"type": Enum, stride: Sizei, pointer: usize) void {
         return self.ptr_glVertexAttribLPointer.?(_index, size, @"type", stride, pointer);
     }
     /// - **Available since:** OpenGL 4.1
@@ -4720,11 +4720,11 @@ pub const GL = struct {
         return self.ptr_glDrawArraysInstancedBaseInstance.?(mode, first, count, instancecount, baseinstance);
     }
     /// - **Available since:** OpenGL 4.2
-    pub fn drawElementsInstancedBaseInstance(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei, baseinstance: UInt) void {
+    pub fn drawElementsInstancedBaseInstance(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei, baseinstance: UInt) void {
         return self.ptr_glDrawElementsInstancedBaseInstance.?(mode, count, @"type", indices, instancecount, baseinstance);
     }
     /// - **Available since:** OpenGL 4.2
-    pub fn drawElementsInstancedBaseVertexBaseInstance(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: ?*const anyopaque, instancecount: Sizei, basevertex: Int, baseinstance: UInt) void {
+    pub fn drawElementsInstancedBaseVertexBaseInstance(self: *const GL, mode: Enum, count: Sizei, @"type": Enum, indices: usize, instancecount: Sizei, basevertex: Int, baseinstance: UInt) void {
         return self.ptr_glDrawElementsInstancedBaseVertexBaseInstance.?(mode, count, @"type", indices, instancecount, basevertex, baseinstance);
     }
     /// - **Available since:** OpenGL 4.2
