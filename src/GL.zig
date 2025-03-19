@@ -1,7 +1,12 @@
-//! Simple opengl loader, entirely written in Zig. All functions are under `zgll.GL`, all constants and function got their suffix removed (`GL_` and `gl`) for easier typing. Don't expect much updates, might do extension loader soon...
+//! Simple opengl loader, entirely written in Zig. All functions are under `zgll.GL`, all
+//! constants and function got their suffix removed (`GL_` and `gl`) for easier typing.
+//! Don't expect much updates, might do extension loader soon...
 //!
 //! ### Beware though
 //! This library was mostly made in a night, so expect typos, incoherent names and more...
+//! 
+//! Use `.init()` along with an existing variable of this type
+//! to load the current context's OpenGL functions.
 
 const std = @import("std");
 const builtin = @import("builtin");
@@ -58,8 +63,6 @@ fn closeLib() void {
     }
 }
 
-/// Use `.init()` along with an existing variable of this type
-/// to load the current context's OpenGL functions.
 const GL = @This();
 //#region struct
 comptime {
